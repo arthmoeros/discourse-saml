@@ -1,3 +1,5 @@
+BASE_URL_OVERRIDE = "https://discourse-qa.fif.tech"
+
 class SamlAuthenticator < ::Auth::OAuth2Authenticator
   attr_reader :user, :attributes, :info
 
@@ -49,17 +51,17 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
   def register_middleware(omniauth)
     omniauth.provider :saml,
                       name: name,
-                      issuer: Discourse.base_url,
+                      issuer: BASE_URL_OVERRIDE,
                       idp_sso_target_url: setting(:target_url),
                       idp_slo_target_url: setting(:slo_target_url),
-                      slo_default_relay_state: Discourse.base_url,
+                      slo_default_relay_state: BASE_URL_OVERRIDE,
                       idp_cert_fingerprint: GlobalSetting.try(:saml_cert_fingerprint),
                       idp_cert_fingerprint_algorithm: GlobalSetting.try(:saml_cert_fingerprint_algorithm),
                       idp_cert: setting(:cert),
                       request_attributes: request_attributes,
                       attribute_statements: attribute_statements,
-                      assertion_consumer_service_url: Discourse.base_url + "/auth/#{name}/callback",
-                      single_logout_service_url: Discourse.base_url + "/auth/#{name}/slo",
+                      assertion_consumer_service_url: BASE_URL_OVERRIDE + "/auth/#{name}/callback",
+                      single_logout_service_url: BASE_URL_OVERRIDE + "/auth/#{name}/slo",
                       name_identifier_format: GlobalSetting.try(:saml_name_identifier_format),
                       custom_url: (GlobalSetting.try(:saml_request_method) == 'post') ? "/discourse_saml" : nil,
                       certificate: GlobalSetting.try(:saml_sp_certificate),

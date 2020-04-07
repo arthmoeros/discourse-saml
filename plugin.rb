@@ -3,6 +3,7 @@
 # version: 0.1
 # author: Robin Ward
 # url: https://github.com/discourse/discourse-saml
+BASE_URL_OVERRIDE = "https://discourse-qa.fif.tech"
 
 register_asset 'stylesheets/saml.scss'
 
@@ -23,7 +24,7 @@ after_initialize do
   if GlobalSetting.try(:saml_slo_target_url).present?
     SiteSetting.class_eval do
       def self.logout_redirect
-        Discourse.base_url + "/auth/saml/spslo"
+        BASE_URL_OVERRIDE + "/auth/saml/spslo"
       end
     end
   end
@@ -165,8 +166,8 @@ if request_method == 'post'
 
         settings.compress_request = false
         settings.passive = false
-        settings.issuer = Discourse.base_url
-        settings.assertion_consumer_service_url = Discourse.base_url + "/auth/saml/callback"
+        settings.issuer = BASE_URL_OVERRIDE
+        settings.assertion_consumer_service_url = BASE_URL_OVERRIDE + "/auth/saml/callback"
         settings.name_identifier_format = GlobalSetting.try(:saml_name_identifier_format) || "urn:oasis:names:tc:SAML:2.0:protocol"
 
         saml_params = authn_request.create_params(settings, {})
